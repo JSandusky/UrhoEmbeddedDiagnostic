@@ -313,17 +313,27 @@ namespace Urho3D
 					Variant var;
 					if (auto n = scene->GetNode(nodeID))
 					{
-						auto attrs = n->GetAttributes();
-						for (auto attr : *attrs)
+						if (attrName.Compare("delete", false) == 0)
 						{
-							if (attr.name_.Compare(attrName) == 0)
+							SharedPtr<Node> sharedNode(n);
+							server->AddDeferredCommand([=]() {
+								sharedNode->Remove();
+							});
+						}
+						else
+						{
+							auto attrs = n->GetAttributes();
+							for (auto attr : *attrs)
 							{
-								var.FromString(attr.type_, data);
-								SharedPtr<Node> node(n);
-								server->AddDeferredCommand([=]() {
-									node->SetAttribute(attrName, var);
-								});
-								break;
+								if (attr.name_.Compare(attrName) == 0)
+								{
+									var.FromString(attr.type_, data);
+									SharedPtr<Node> node(n);
+									server->AddDeferredCommand([=]() {
+										node->SetAttribute(attrName, var);
+									});
+									break;
+								}
 							}
 						}
 					}
@@ -332,18 +342,28 @@ namespace Urho3D
 				{
 					if (auto c = scene->GetComponent(nodeID))
 					{
-						auto attrs = c->GetAttributes();
-						for (auto attr : *attrs)
+						if (attrName.Compare("delete", false) == 0)
 						{
-							if (attr.name_.Compare(attrName) == 0)
+							SharedPtr<Component> comp(c);
+							server->AddDeferredCommand([=]() {
+								comp->Remove();
+							});
+						}
+						else
+						{
+							auto attrs = c->GetAttributes();
+							for (auto attr : *attrs)
 							{
-								Variant var;
-								var.FromString(attr.type_, data);
-								SharedPtr<Component> comp(c);
-								server->AddDeferredCommand([=]() {
-									comp->SetAttribute(attrName, var);
-								});
-								break;
+								if (attr.name_.Compare(attrName) == 0)
+								{
+									Variant var;
+									var.FromString(attr.type_, data);
+									SharedPtr<Component> comp(c);
+									server->AddDeferredCommand([=]() {
+										comp->SetAttribute(attrName, var);
+									});
+									break;
+								}
 							}
 						}
 					}
