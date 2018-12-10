@@ -160,13 +160,14 @@ namespace Urho3D
 
 	void SceneLister::Search(DevServer* server, const StringVector& searchTerms, PODVector<Pair<String, String>>& results)
 	{
-		for (auto s : scenes_)
+		auto sceneList = server->scenes_;
+		for (auto s : sceneList)
 		{
-			if (auto scene = s.Lock())
+			if (s)
 			{
-				if (searchTerms.Contains(scene->GetName()))
+				if (searchTerms.Contains(s->GetName()))
 				{
-					results.Push(Pair<String, String>(scene->GetName(), "/Scenes"));
+					results.Push(Pair<String, String>(s->GetName(), "/Scenes"));
 					continue;
 				}
 			}

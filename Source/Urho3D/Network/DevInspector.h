@@ -7,9 +7,9 @@
 namespace Urho3D
 {
 
+	/// This doesn't actually emit HTML aside from through WriteRawNavigation for creating the drop-down menu of scenes.
 	struct SceneLister : DevServerHandler {
 		const String uriBase = "Scenes";
-		Vector<WeakPtr<Scene>> scenes_;
 
 		virtual bool Handles(DevServer*, const Vector<String>& uri) override { return false; }
 		virtual String EmitHTML(DevServer*, const Vector<String>& uri, const VariantMap& params) override { return String(); }
