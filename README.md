@@ -1,9 +1,13 @@
 # Urho Embedded Diagnostic
 Embedded diagnostics server for Urho3D. Defaults to port 80 and can be accessed with `localhost`.
 
-It is not designed to be a substitution for an editor or other tools, but an additional swiss army knife to fulfill multiple duties at runtime without requiring setting up additional GUI. Paired with the script-console it should provide most things
+It is not designed to be a substitution for an editor or other tools, but an additional swiss army knife to fulfill multiple duties at runtime without requiring setting up additional GUI. Paired with the script-console it should provide enough for most basic tweaks and understanding what/why things are happening in your project.
 
 Depending on local network and firewall settings you can also access the diagnostics from your phone while the game remains running, negating any need to run in windowed mode or gamble with alt-tab driver  hell.
+
+Currently none of CivetWeb's security features are used, and I cannot see how they could be secure when the executable is shipped (short of deferring authentication to a master server somehwere) so it assumed that the DevServer will only be enabled in internal builds and not release builds.
+
+I would not recommend leaving the server live in a public build.
 
 ---
 
