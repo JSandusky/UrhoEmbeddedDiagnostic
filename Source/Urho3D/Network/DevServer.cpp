@@ -483,7 +483,7 @@ namespace Urho3D
 		item.text_ = content;
 		item.timeStamp_ = Time::GetTimeStamp();
 
-		simpleTexts_.Insert(Pair<String,StaticItem>("/" + title, item));
+		simpleTexts_.Insert(Pair<String,StaticItem>(title, item));
 	}
 
 	void DevServer::Publish(const String& title, const SharedPtr<Image>& content)
@@ -492,7 +492,7 @@ namespace Urho3D
 		item.image_ = content;
 		item.timeStamp_ = Time::GetTimeStamp();
 
-		simpleTexts_.Insert(Pair<String, StaticItem>("/" + title, item));
+		simpleTexts_.Insert(Pair<String, StaticItem>(title, item));
 	}
 
 	void DevServer::AddStaticLink(const String& title, const String& url)
@@ -513,9 +513,11 @@ namespace Urho3D
 
 	bool DevServer::SimpleHandler::Handles(DevServer* server, const Vector<String>& uri)
 	{
-		if (uri.Size() == 0)
+		if (uri.Size() < 2)
 			return false;
-		auto found = server->simpleTexts_.Find(uri[0]);
+		if (uri[0].Compare("Pages", false) != 0)
+			return false;
+		auto found = server->simpleTexts_.Find(uri[1]);
 		if (found != server->simpleTexts_.End())
 			return true;
 		return false;
@@ -523,9 +525,8 @@ namespace Urho3D
 
 	String DevServer::SimpleHandler::EmitHTML(DevServer* server, const Vector<String>& uri, const VariantMap& params)
 	{
-		auto found = server->simpleTexts_.Find(uri[0]);
+		auto found = server->simpleTexts_.Find(uri[1]);
 		String ret;
-		//server->StandardHeader(found->first_.Substring(1), ret);
 		ret += "<h2>" + found->second_.timeStamp_ + "</h2>\r\n";
 		if (auto img = found->second_.image_)
 		{
@@ -553,7 +554,7 @@ namespace Urho3D
 		}
 
 		return server->FillTemplate("template_page.html", { 
-				{ "${TITLE}", found->first_.Substring(1) }, 
+				{ "${TITLE}", found->first_ }, 
 				{ "${BODY}", ret } 
 			});
 	}
@@ -572,7 +573,7 @@ namespace Urho3D
 		data += "<a class=\"nav-link dropdown-toggle\" href=\"#\" id=\"navbarDropdown\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Diagnostics</a>";
 		data += "<div class=\"dropdown-menu\" aria-labelledby=\"navbarDropdown\">";
 		for (auto entry : server->simpleTexts_)
-			data += "<a class=\"dropdown-item\" href=\"" + entry.first_ + "\">" + entry.first_.Substring(1) + "</a>";
+			data += "<a class=\"dropdown-item\" href=\"Pages/" + entry.first_ + "\">" + entry.first_ + "</a>";
 		data += "</div>";
 		data += "</li>";
 	}
@@ -583,6 +584,8 @@ namespace Urho3D
 	}
 	bool DevServer::CommandHandler::HandlesPost(DevServer* server, const Vector<String>& uri)
 	{
+		if (uri.Size() < 2)
+			return false;
 		for (auto com : server->commands_)
 		{
 			// already passed, don't worry about checking uri 0
@@ -596,7 +599,7 @@ namespace Urho3D
 		String html;
 		for (auto com : server->commands_)
 		{
-			html += "<button type=\"button\" class=\"btn btn-info\" onclick=\"$.post('" + com.url_ + "');\" style=\"margin: 10px\">" + com.title_ + "</button>";
+			html += "<button type=\"button\" class=\"btn btn-info\" onclick=\"$.post('Commands/" + com.url_ + "');\" style=\"margin: 10px\">" + com.title_ + "</button>";
 			if (!com.tip_.Empty())
 				html += com.tip_;
 			html += "<br />";
