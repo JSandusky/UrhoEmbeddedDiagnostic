@@ -141,7 +141,7 @@ namespace Urho3D
 		SubscribeToEvent(E_LOGMESSAGE, URHO3D_HANDLER(DevServer, OnLog));
 
 #ifdef URHO3D_ANGELSCRIPT
-		RegisterCommand("Dump Script API", [](Context* ctx) {
+		RegisterCommand("Dump Script Header", [](Context* ctx) {
 			auto log = ctx->GetSubsystem<Log>();
 			log->SetBlockEvents(true);
 			log->Open("dump.h");
@@ -151,7 +151,7 @@ namespace Urho3D
 			log->SetBlockEvents(false);
 			log->SetTimeStamp(true);
 		});
-		RegisterCommand("Dump Attributes", [](Context* ctx) {
+		RegisterCommand("Dump Script Doxygen", [](Context* ctx) {
 			auto log = ctx->GetSubsystem<Log>();
 			log->SetBlockEvents(true);
 			log->Open("dump.dox");
@@ -585,7 +585,8 @@ namespace Urho3D
 	{
 		for (auto com : server->commands_)
 		{
-			if (com.url_.Compare(uri[0], false) == 0)
+			// already passed, don't worry about checking uri 0
+			if (com.url_.Compare(uri[1], false) == 0)
 				return true;
 		}
 		return false;
