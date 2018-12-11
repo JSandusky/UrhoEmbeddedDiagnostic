@@ -505,7 +505,7 @@ namespace Urho3D
 		CommandItem item;
 		item.title_ = name;
 		item.tip_ = tip;
-		item.url_ = "/Commands/" + name;
+		item.url_ = name;
 		item.url_.Replace(' ', '_');
 		item.command_ = cmd;
 		commands_.push_back(item);
@@ -611,7 +611,7 @@ namespace Urho3D
 	{
 		for (auto com : server->commands_)
 		{
-			if (com.url_.Compare(uri[0], false) == 0)
+			if (com.url_.Compare(uri[1], false) == 0)
 			{
 				server->AddDeferredCommand([=]() {
 					com.command_(server->GetContext());
