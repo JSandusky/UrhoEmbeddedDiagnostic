@@ -232,7 +232,7 @@ namespace Urho3D
 								if (c->IsTemporary())
 									compHeader += " (temporary)";
 								String subBody = SerializableToHTML(c, compURI);
-								body += "<button type=\"button\" class=\"close\" aria-label=\"Close\" onclick=\"$.post('" + compURI + "/DELETE').always(function() { location.reload(); });\"><span aria-hidden=\"true\">&times;</span></button>";
+								body += "<button type=\"button\" class=\"close\" aria-label=\"Close\" onclick=\"$.post('" + compURI + "/DELETE', function(data) { location.reload(); });\"><span aria-hidden=\"true\">&times;</span></button>";
 								body += server->Accordian("component_" + String(i), compHeader, subBody);
 							}
 							body += "</ul>";
